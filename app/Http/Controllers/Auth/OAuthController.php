@@ -50,8 +50,7 @@ class OAuthController extends Controller
         // 5. Create user and profile if they don't exist
         $sub = strval($token->claims()->get('sub'));
         $user = User::where('username', $sub)->first();
-        if (!$user)
-        {
+        if (!$user) {
             $user = new User([
                 'username' => $sub,
                 'password' => 'NOT_TO_BE_USED',
