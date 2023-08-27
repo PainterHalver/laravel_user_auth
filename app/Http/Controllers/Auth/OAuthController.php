@@ -71,4 +71,52 @@ class OAuthController extends Controller
 
         return redirect()->route('home');
     }
+
+    public function handleGithubCallback(Request $request): RedirectResponse
+    {
+        // 1. Confirm csrf token
+        if (!isset($request['state']) || $request['state'] !== csrf_token()) {
+            abort(401, 'Invalid state parameter');
+        }
+
+        // 2. Exchange code for token
+        $code = $request['code'];
+        $access_token_url = 'https://github.com/login/oauth/access_token';
+        $token_response = Http::asForm()->withHeader('Accept', 'application/json')
+            ->post($access_token_url, [
+                'code' => $code,
+                'client_id' => env('OAUTH_GITHUB_CLIENT_ID'),
+                'client_secret' => env('OAUTH_GITHUB_CLIENT_SECRET'),
+                'redirect_uri' => env('OAUTH_GITHUB_REDIRECT_URL'),
+        ])->json();
+        $access_token = $token_response['access_token'];
+
+        // 3. Get user info
+        $user_info_url = 'https://api.github.com/user';
+        $user_info_response = Http::withToken($access_token)->get($user_info_url)->json();
+
+        // 4. Create user and profile if they don't exist
+        $username_to_use = 'git'.$user_info_response['id'];
+        $user = User::where('username', $username_to_use)->first();
+        if (!$user) {
+            $user = new User([
+                'username' => $username_to_use,
+                'password' => 'NOT_TO_BE_USED',
+            ]);
+            $user->save();
+
+            $profile = new Profile([
+                'name' => $user_info_response['name'] ?? $user_info_response['login'],
+                'email' => $user_info_response['email'],
+                'picture' => $user_info_response['avatar_url'],
+                'provider' => 'github',
+            ]);
+            $user->profile()->save($profile);
+        }
+
+        // 5. Log the user in
+        Auth::login($user, true);
+
+        return redirect()->route('home');
+    }
 }

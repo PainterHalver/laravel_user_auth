@@ -12,20 +12,9 @@ class HomeController extends Controller
 {
     public function index()
     {
-        $google_base = Cache::get('google_base_authorization_endpoint');
-        if (!$google_base) {
-            // Cache the authorization endpoint from Google
-            $google_base = AuthHelper::getGoogleDiscoverDocument()['authorization_endpoint'];
-            cache(['google_base_authorization_endpoint' => $google_base], now()->addDays(1));
-        }
-        $google_auth_endpoint = $google_base
-            . '?client_id=' . env('OAUTH_GOOGLE_CLIENT_ID')
-            . '&response_type=code'
-            . '&scope=openid%20email%20profile'
-            . '&redirect_uri=' . env('OAUTH_GOOGLE_REDIRECT_URL')
-            . '&state=' . csrf_token();
+        $auth_endpoints = AuthHelper::getAuthEndpoints();
 
-        return view('home/index')->with('google_auth_endpoint', $google_auth_endpoint);
+        return view('home/index')->with('auth_endpoints', $auth_endpoints);
     }
 
     public function logout()

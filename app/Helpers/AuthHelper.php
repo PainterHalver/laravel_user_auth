@@ -2,10 +2,42 @@
 
 namespace App\Helpers;
 
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 
 class AuthHelper
 {
+    public static function getAuthEndpoints(): array
+    {
+        $result = [];
+
+        // GOOGLE
+        $google_base = Cache::get('google_base_authorization_endpoint');
+        if (!$google_base) {
+            // Cache the authorization endpoint from Google
+            $google_base = AuthHelper::getGoogleDiscoverDocument()['authorization_endpoint'];
+            cache(['google_base_authorization_endpoint' => $google_base], now()->addDays(1));
+        }
+        $google_auth_endpoint = $google_base
+            . '?client_id=' . env('OAUTH_GOOGLE_CLIENT_ID')
+            . '&response_type=code'
+            . '&scope=openid%20email%20profile'
+            . '&redirect_uri=' . env('OAUTH_GOOGLE_REDIRECT_URL')
+            . '&state=' . csrf_token();
+        $result['google'] = $google_auth_endpoint;
+
+        // GITHUB
+        $github_base = 'https://github.com/login/oauth/authorize';
+        $github_auth_endpoint = $github_base
+            . '?client_id=' . env('OAUTH_GITHUB_CLIENT_ID')
+            . '&redirect_uri=' . env('OAUTH_GITHUB_REDIRECT_URL')
+            . '&scope=user%20read:user%20user:email'
+            . '&state=' . csrf_token();
+        $result['github'] = $github_auth_endpoint;
+
+        return $result;
+    }
+
     public static function getGoogleDiscoverDocument(): array
     {
         try {

@@ -22,5 +22,8 @@ Route::namespace('Auth')->prefix('auth')->group(function () {
     Route::prefix('oauth')->group(function () {
         Route::get('google/callback', [OAuthController::class, 'handleGoogleCallback'])
             ->name('auth.oauth.google.callback');
+
+        Route::get('github/callback', [OAuthController::class, 'handleGithubCallback'])
+            ->name('auth.oauth.github.callback');
     });
 });

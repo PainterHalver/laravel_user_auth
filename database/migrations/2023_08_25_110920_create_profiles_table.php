@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id');
             $table->string('name');
-            $table->string('email')->unique();
+            $table->string('email')->unique()->nullable(); // GitHub has option to hide email
             $table->string('picture')->nullable();
             $table->string('provider');
             $table->timestamps();

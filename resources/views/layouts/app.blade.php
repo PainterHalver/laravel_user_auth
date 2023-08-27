@@ -9,10 +9,8 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <title>@yield('title', 'Laravel Auth App')</title>
 </head>
-<body>
+<body class="min-h-screen flex flex-col">
 @include('layouts._header')
-<div>
-    @yield('content')
-</div>
+@yield('content')
 </body>
 </html>
