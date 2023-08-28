@@ -35,6 +35,17 @@ class AuthHelper
             . '&state=' . csrf_token();
         $result['github'] = $github_auth_endpoint;
 
+        // TWITTER
+        $twitter_auth_endpoint = 'https://twitter.com/i/oauth2/authorize'
+            . '?response_type=code'
+            . '&client_id=' . env('OAUTH_TWITTER_CLIENT_ID')
+            . '&redirect_uri=' . env('OAUTH_TWITTER_REDIRECT_URL')
+            . '&scope=tweet.read%20users.read'
+            . '&state=' . csrf_token()
+            . '&code_challenge=' . env('OAUTH_TWITTER_CODE_CHALLENGE')
+            . '&code_challenge_method=plain';
+        $result['twitter'] = $twitter_auth_endpoint;
+
         return $result;
     }
 

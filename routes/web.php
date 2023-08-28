@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Auth\OAuthController;
+use App\Http\Middleware\ConfirmCsrfInQueryState;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,12 +19,17 @@ use App\Http\Controllers\Auth\OAuthController;
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::post('/logout', [HomeController::class, 'logout'])->name('logout');
 
-Route::namespace('Auth')->prefix('auth')->group(function () {
-    Route::prefix('oauth')->group(function () {
-        Route::get('google/callback', [OAuthController::class, 'handleGoogleCallback'])
-            ->name('auth.oauth.google.callback');
+Route::namespace('Auth')->prefix('auth')
+    ->middleware(ConfirmCsrfInQueryState::class)
+    ->group(function () {
+        Route::prefix('oauth')->group(function () {
+            Route::get('google/callback', [OAuthController::class, 'handleGoogleCallback'])
+                ->name('auth.oauth.google.callback');
 
-        Route::get('github/callback', [OAuthController::class, 'handleGithubCallback'])
-            ->name('auth.oauth.github.callback');
-    });
+            Route::get('github/callback', [OAuthController::class, 'handleGithubCallback'])
+                ->name('auth.oauth.github.callback');
+
+            Route::get('twitter/callback', [OAuthController::class, 'handleTwitterCallback'])
+                ->name('auth.oauth.twitter.callback');
+        });
 });

@@ -36,6 +36,19 @@
                 <img src="{{ asset('images/github-3-240.png') }}" alt="Github PNG" class="inline h-11 p-[3px]">
                 <span class="px-2">Sign in with Github</span>
             </a>
+
+            <p class="mt-3 mb-1">
+                Twitter's OAuth:
+                <a href="https://developer.twitter.com/en/docs/authentication/oauth-2-0/authorization-code"
+                class="hover:underline text-blue-400 hover:text-blue-500"
+                target="_blank">
+                    Authorization Code Flow
+                </a>
+            </p>
+            <a href="{{$auth_endpoints['twitter'] ?? '#'}}" class="bg-blue-400 hover:bg-blue-500 text-white pr-1 rounded-md">
+                <img src="{{ asset('images/icons8-twitter-96.png') }}" alt="Twitter PNG" class="inline h-11 p-[6px]">
+                <span class="px-2">Sign in with Twitter</span>
+            </a>
         </div>
     </div>
 @endsection
