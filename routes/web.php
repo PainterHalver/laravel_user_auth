@@ -1,9 +1,9 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Auth\OAuthController;
+use App\Http\Controllers\HomeController;
 use App\Http\Middleware\ConfirmCsrfInQueryState;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,4 +32,4 @@ Route::namespace('Auth')->prefix('auth')
             Route::get('twitter/callback', [OAuthController::class, 'handleTwitterCallback'])
                 ->name('auth.oauth.twitter.callback');
         });
-});
+    });

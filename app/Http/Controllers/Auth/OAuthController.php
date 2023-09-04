@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Helpers\AuthHelper;
 use App\Http\Controllers\Controller;
+use App\Models\Profile;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use App\Helpers\AuthHelper;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
-use Lcobucci\JWT\Token\Parser;
 use Lcobucci\JWT\Encoding\JoseEncoder;
-use App\Models\User;
-use App\Models\Profile;
+use Lcobucci\JWT\Token\Parser;
 
 class OAuthController extends Controller
 {
@@ -19,7 +19,7 @@ class OAuthController extends Controller
     {
         // 1. Get token endpoint from cache or Google's discovery document
         $token_base_endpoint = cache('google_base_token_endpoint');
-        if (!$token_base_endpoint) {
+        if (! $token_base_endpoint) {
             $token_base_endpoint = AuthHelper::getGoogleDiscoverDocument()['token_endpoint'];
             cache(['google_base_token_endpoint' => $token_base_endpoint], now()->addDays(1));
         }
@@ -45,7 +45,7 @@ class OAuthController extends Controller
         // 4. Create user and profile if they don't exist
         $sub = strval($token->claims()->get('sub'));
         $user = User::where('username', $sub)->first();
-        if (!$user) {
+        if (! $user) {
             $user = new User([
                 'username' => $sub,
                 'password' => 'NOT_TO_BE_USED',
@@ -78,7 +78,7 @@ class OAuthController extends Controller
                 'client_id' => env('OAUTH_GITHUB_CLIENT_ID'),
                 'client_secret' => env('OAUTH_GITHUB_CLIENT_SECRET'),
                 'redirect_uri' => env('OAUTH_GITHUB_REDIRECT_URL'),
-        ])->json();
+            ])->json();
         $access_token = $token_response['access_token'];
 
         // 2. Get user info
@@ -88,7 +88,7 @@ class OAuthController extends Controller
         // 3. Create user and profile if they don't exist
         $username_to_use = 'git'.$user_info_response['id'];
         $user = User::where('username', $username_to_use)->first();
-        if (!$user) {
+        if (! $user) {
             $user = new User([
                 'username' => $username_to_use,
                 'password' => 'NOT_TO_BE_USED',
@@ -142,7 +142,7 @@ class OAuthController extends Controller
         // 4. Create user and profile if they don't exist
         $username_to_use = 'twitter'.$user_data['id'];
         $user = User::where('username', $username_to_use)->first();
-        if (!$user) {
+        if (! $user) {
             $user = new User([
                 'username' => $username_to_use,
                 'password' => 'NOT_TO_BE_USED',

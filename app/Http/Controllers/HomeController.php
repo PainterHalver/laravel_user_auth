@@ -1,12 +1,11 @@
-<?php /** @noinspection ALL */
+<?php
+
+/** @noinspection ALL */
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Http;
 use App\Helpers\AuthHelper;
+use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
@@ -20,6 +19,7 @@ class HomeController extends Controller
     public function logout()
     {
         Auth::logout();
+
         return redirect()->route('home');
     }
 }

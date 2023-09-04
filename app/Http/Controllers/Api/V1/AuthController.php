@@ -3,11 +3,11 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
-use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\UserResource;
+use App\Models\User;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
@@ -15,12 +15,12 @@ class AuthController extends Controller
     {
         $params = $request->validate([
             'username' => ['required'],
-            'password' => ['required']
+            'password' => ['required'],
         ]);
 
-        if(!Auth::attempt($params)) {
+        if (! Auth::attempt($params)) {
             return response()->json([
-                'message' => 'Invalid credentials'
+                'message' => 'Invalid credentials',
             ], 401);
         }
 
@@ -29,7 +29,7 @@ class AuthController extends Controller
 
         return response()->jsend('success', [
             'user' => new UserResource($user),
-            'token' => $token
+            'token' => $token,
         ]);
     }
 }

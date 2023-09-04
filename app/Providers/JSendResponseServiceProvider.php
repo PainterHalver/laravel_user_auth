@@ -6,7 +6,6 @@ use Illuminate\Support\ServiceProvider;
 
 class JSendResponseServiceProvider extends ServiceProvider
 {
-
     public function register(): void
     {
         //

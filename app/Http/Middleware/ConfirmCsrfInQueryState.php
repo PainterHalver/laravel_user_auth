@@ -13,7 +13,7 @@ class ConfirmCsrfInQueryState
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (!isset($request['state']) || $request['state'] !== csrf_token()) {
+        if (! isset($request['state']) || $request['state'] !== csrf_token()) {
             abort(401, 'Invalid state parameter');
         }
 
